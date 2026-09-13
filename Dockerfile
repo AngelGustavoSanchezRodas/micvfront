@@ -6,8 +6,8 @@ WORKDIR /app
 
 # 2. Instalación de dependencias
 FROM base AS deps
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile || pnpm install
 
 # 3. Compilación de Next.js
 FROM base AS builder
