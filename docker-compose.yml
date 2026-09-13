@@ -1,0 +1,14 @@
+services:
+  frontend:
+    build: .
+    container_name: cv-frontend
+    restart: always
+    ports:
+      # El puerto 80 recibe las peticiones del túnel de Cloudflare
+      - "80:80"
+    networks:
+      - red-cv
+
+networks:
+  red-cv:
+    external: true
