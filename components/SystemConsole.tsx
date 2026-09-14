@@ -32,10 +32,12 @@ export const SystemConsole: React.FC<SystemConsoleProps> = ({ profile }) => {
   };
 
   const [logs, setLogs] = useState<CommandLog[]>([initialLog]);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+    }
   }, [logs]);
 
   const handleCommand = (e: React.FormEvent) => {
@@ -121,7 +123,7 @@ export const SystemConsole: React.FC<SystemConsoleProps> = ({ profile }) => {
         break;
 
       case 'clear':
-        setLogs([]);
+        setLogs([initialLog]);
         setInput('');
         return;
 
@@ -160,7 +162,7 @@ export const SystemConsole: React.FC<SystemConsoleProps> = ({ profile }) => {
         <span className="text-xs text-zinc-500 hidden sm:inline">TTY-01</span>
       </div>
 
-      <div className="p-4 max-h-80 overflow-y-auto space-y-3 bg-black/50">
+      <div ref={scrollContainerRef} className="p-4 max-h-80 overflow-y-auto space-y-3 bg-black/50 scroll-smooth">
         {logs.map((log) => (
           <div key={log.id} className="space-y-1">
             <div className="flex items-center gap-2 text-zinc-400">
@@ -170,7 +172,6 @@ export const SystemConsole: React.FC<SystemConsoleProps> = ({ profile }) => {
             <div className="pl-4 text-zinc-300 text-xs md:text-sm">{log.output}</div>
           </div>
         ))}
-        <div ref={bottomRef} />
       </div>
 
       <form onSubmit={handleCommand} className="flex border-t border-zinc-800 bg-zinc-900/60 p-2">
