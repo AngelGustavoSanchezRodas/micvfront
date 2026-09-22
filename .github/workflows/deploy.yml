@@ -1,4 +1,4 @@
-name: Deploy Frontend
+name: Despliegue Continuo Homelab
 
 on:
   push:
@@ -8,10 +8,14 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Descargar repositorio
+      - name: Descargar cambios del repositorio
         uses: actions/checkout@v4
 
-      - name: Desplegar contenedor
+      - name: Reconstruir y levantar contenedor
         run: |
-          docker compose down --remove-orphans
-          docker compose up -d --build
+          docker compose up -d --build --remove-orphans
+
+      - name: Limpieza automática de residuos y caché
+        run: |
+          docker image prune -f
+          docker builder prune -f --filter "until=24h"
